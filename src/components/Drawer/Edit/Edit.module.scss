@@ -1,9 +1,10 @@
-.drawer_inner {
+.drawer {
   & :global(.ant-drawer-header) {
     padding: 10px 15px 10px 10px;
     :global(.ant-drawer-title) {
       font-size: 12px;
       word-break: break-all;
+      padding-right: 5px;
     }
   }
   & :global(.ant-drawer-body) {

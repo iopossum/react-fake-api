@@ -94,7 +94,7 @@ const EditPathDrawer = forwardRef<EditDrawerHandle<Route>, EditDrawerProps<Group
       placement="right"
       onClose={_onClose}
       visible={visible}
-      className={styles.drawerInner}
+      className={styles.drawer}
       closeIcon={null}
       extra={
         <Space>
