@@ -1,0 +1,22 @@
+{
+  "exclude": ["dist", "dev", "example"],
+  "include": ["src"],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "module": "es6",
+    "target": "esnext",
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationDir": "./src/types",
+    "emitDeclarationOnly": false,
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+  }
+}

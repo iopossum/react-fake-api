@@ -1,0 +1,46 @@
+{
+  "react-fake-api.min.js": {
+    "bundled": 30116,
+    "minified": 30090,
+    "gzipped": 9059
+  },
+  "react-fake-api.js": {
+    "bundled": 74915,
+    "minified": 30199,
+    "gzipped": 9084
+  },
+  "react-fake-api.cjs.js": {
+    "bundled": 71050,
+    "minified": 33646,
+    "gzipped": 9399
+  },
+  "react-fake-api.esm.js": {
+    "bundled": 68830,
+    "minified": 31695,
+    "gzipped": 9371,
+    "treeshaked": {
+      "rollup": {
+        "code": 28689,
+        "import_statements": 766
+      },
+      "webpack": {
+        "code": 30689
+      }
+    }
+  },
+  "react-fake-api.full.min.js": {
+    "bundled": 29536,
+    "minified": 29510,
+    "gzipped": 8856
+  },
+  "react-fake-api2.js": {
+    "bundled": 845998,
+    "minified": 800739,
+    "gzipped": 81072
+  },
+  "react-fake-api.with-styles.min.js": {
+    "bundled": 74915,
+    "minified": 30199,
+    "gzipped": 9084
+  }
+}

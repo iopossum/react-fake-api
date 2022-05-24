@@ -1,0 +1,15 @@
+.drawer_inner {
+  & :global(.ant-drawer-header) {
+    padding: 10px 15px 10px 10px;
+    :global(.ant-drawer-title) {
+      font-size: 12px;
+      word-break: break-all;
+    }
+  }
+  & :global(.ant-drawer-body) {
+    padding: 10px 20px;
+  }
+  & :global(.ant-form-item) {
+    margin-bottom: 10px;
+  }
+}
