@@ -1,0 +1,58 @@
+.drawer {
+  & :global(.ant-drawer-header) {
+    padding: 10px 20px 10px 10px;
+    :global(.ant-drawer-title) {
+      font-size: 15px;
+      word-break: break-all;
+    }
+  }
+  & :global(.ant-drawer-body) {
+    padding: 0;
+    & > :global(.ant-collapse) {
+      & :global(.ant-collapse-header) {
+        padding: 8px 12px !important;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+      & :global(.ant-collapse-content-box) {
+        padding: 0 4px 0 12px;
+      }
+      & :global(.ant-collapse-header-text) {
+        word-break: break-all;
+      }
+    }
+    & :global(.ant-list-item) {
+      padding: 8px 0;
+      & > :global(.ant-list-item-action) {
+        margin-left: 15px;
+        & > li > :global(.anticon) {
+          cursor: pointer;
+        }
+      }
+      & > :global(.ant-checkbox-wrapper) {
+        font-size: 12px;
+        & :global(.ant-tag) {
+          font-size: 10px;
+          line-height: 18px;
+          margin-right: 4px;
+        }
+        & > span:not(.ant-checkbox) {
+          word-break: break-all;
+        }
+      }
+      & :global(.ant-input-number) {
+        width: 50px;
+      }
+    }
+  }
+}
+
+.delay {
+  font-size: 12px;
+}
+
+.badge {
+  & > svg {
+    height: 10px;
+  }
+}

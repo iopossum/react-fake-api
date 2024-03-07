@@ -1,40 +1,42 @@
-const webpack = require('webpack');
-const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { merge } = require('webpack-merge');
-const path = require('path');
+const path = require("path");
+
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { merge } = require("webpack-merge");
+
+// style files regexes
+const styleRegex = /\.(less|css|scss|sass)$/;
+const moduleRegex = /\.module\.(less|css|scss|sass)$/;
 
 module.exports = (env, { mode }) => {
-
   const envCfg = {
     production: {
-      devtool: 'source-map',
-      plugins: []
+      devtool: "source-map",
+      plugins: [],
     },
     development: {
-      devtool: 'eval-source-map',
+      devtool: "eval-source-map",
       optimization: {},
       devServer: {
         historyApiFallback: true,
         static: {
-          directory: path.join(__dirname, 'dist'),
+          directory: path.join(__dirname, "dist"),
         },
         hot: true,
-        port: 8081
+        port: 8081,
       },
-      plugins: [
-        new HtmlWebpackHarddiskPlugin(),
-      ]
-    }
+      plugins: [new HtmlWebpackHarddiskPlugin()],
+    },
   };
 
   const main = {
-    entry: './src/index.tsx',
+    entry: "./src/index.tsx",
     output: {
-      path: __dirname + '/dist',
-      publicPath: '/',
-      filename: 'assets/bundle.[hash].js'
+      path: path.join(__dirname, "../docs"),
+      publicPath: "/",
+      filename: "assets/bundle.[hash].js",
     },
     mode,
     module: {
@@ -43,33 +45,73 @@ module.exports = (env, { mode }) => {
           test: /\.(ts|tsx|js|jsx)$/,
           exclude: /node_modules/,
           use: {
-            loader: 'ts-loader'
-          }
+            loader: "ts-loader",
+          },
         },
         {
-          test: /\.css$/i,
-          use: ["style-loader", "css-loader"],
+          test: styleRegex,
+          use: [
+            MiniCssExtractPlugin.loader,
+            {
+              loader: "css-loader",
+              options: {
+                importLoaders: 1,
+                modules: {
+                  exportLocalsConvention: "camelCase",
+                  mode: (resourcePath) => {
+                    if (moduleRegex.test(resourcePath)) {
+                      return "local";
+                    }
+
+                    return "global";
+                  },
+                  localIdentName: "[local]___[hash:base64:5]",
+                },
+              },
+            },
+            {
+              loader: "postcss-loader",
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    [
+                      "autoprefixer",
+                      {
+                        overrideBrowserslist: ["> 1%", "last 4 versions"],
+                      },
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              loader: "sass-loader",
+            },
+          ],
         },
-      ]
+      ],
     },
     resolve: {
-      extensions: ['.tsx', '.ts', '.js', '.jsx', '.json', '.css', '.less'],
-      alias: {
-        'react-dom': '@hot-loader/react-dom'
-      }
+      extensions: [".tsx", ".ts", ".js", ".jsx", ".json", ".css", ".less"],
     },
     plugins: [
       new HtmlWebpackPlugin({
         alwaysWriteToDisk: true,
         template: `./src/index.html`,
-        inject: 'body',
-        filename: `index.html`
+        inject: "body",
+        filename: `index.html`,
       }),
       new CleanWebpackPlugin({
         verbose: true,
-        dry: false
-      })
-    ]
+        dry: false,
+      }),
+      new MiniCssExtractPlugin({
+        // Options similar to the same options in webpackOptions.output
+        // both options are optional
+        filename: "assets/[name].[hash].css",
+        // chunkFilename: "[id].css"
+      }),
+    ],
   };
 
   return merge(main, envCfg[mode]);

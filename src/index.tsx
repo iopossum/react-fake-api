@@ -1,30 +1,35 @@
-import { hot } from 'react-hot-loader/root';
-import React, { useRef, FC } from 'react';
-import { MainDrawer } from './components/Drawer';
-import { MainDrawerHandle } from './components/Drawer/Main/Main.types';
-import Button from './components/Button';
-import ErrorBoundary from './components/ErrorBoundary';
-import { RFAProps } from "./types/global";
+import { useRef, PropsWithChildren, memo, FC } from "react";
 
-import 'antd/dist/antd.min.css';
+import { Button, IButtonProps } from "@src/components/button";
+import {
+  MainDrawer,
+  IMainDrawerProps,
+  IMainDrawerHandle,
+} from "@src/components/drawer/main";
+import { ErrorBoundary } from "@src/components/error-boundary";
 
-export const RFA: FC<RFAProps> = ({ children, buttonClassName, ...rest }) => {
+export interface IRFAProps extends IMainDrawerProps, PropsWithChildren {
+  buttonProps?: Omit<IButtonProps, "onClick">;
+}
 
-  const mainDrawerRef = useRef<MainDrawerHandle>(null);
+export const RFA: FC<IRFAProps> = memo(({ children, buttonProps, ...rest }) => {
+  const mainDrawerRef = useRef<IMainDrawerHandle>(null);
 
-  const _showDrawer = (): void => {
-    mainDrawerRef.current && mainDrawerRef.current.open();
+  const handleShowDrawer = () => {
+    mainDrawerRef.current?.open();
   };
 
   return (
     <>
-      { children }
-      <Button className={buttonClassName} onClick={_showDrawer} />
+      {children}
+      <Button {...buttonProps} onClick={handleShowDrawer} />
       <ErrorBoundary>
         <MainDrawer ref={mainDrawerRef} {...rest} />
       </ErrorBoundary>
     </>
-  )
-};
+  );
+});
 
-export default hot(RFA);
+export default RFA;
+
+export { IRoute } from "@src/types";

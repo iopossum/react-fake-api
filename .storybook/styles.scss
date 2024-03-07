@@ -1,0 +1,15 @@
+#storybook-docs,
+#storybook-root {
+  flex: 1;
+}
+
+#storybook-root {
+  display: flex;
+  min-height: 99.5vh;
+  max-width: 99.5vw;
+}
+
+body.dx-device-desktop {
+  padding: 0 !important;
+  min-height: 100vh;
+}

@@ -1,6 +1,9 @@
 node_modules
 src
-dev
+.husky
+.storybook
+.yarn
+.yarnrc.yml
 
 npm-debug.log
 .idea
@@ -17,3 +20,4 @@ npm-debug.log
 package-lock.json
 stats.html
 rollup.config.js
+yarn.lock

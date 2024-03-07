@@ -1,0 +1,29 @@
+.drawer {
+  & :global(.ant-drawer-header) {
+    padding: 10px 15px 10px 10px;
+    :global(.ant-drawer-title) {
+      font-size: 12px;
+      word-break: break-all;
+      padding-right: 5px;
+    }
+  }
+  & :global(.ant-drawer-body) {
+    padding: 10px 20px;
+  }
+  & :global(.ant-form-item) {
+    margin-bottom: 10px;
+  }
+  .response {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    flex: 1;
+    & > div {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+  label[for="custom"] {
+    width: 100%;
+  }
+}
