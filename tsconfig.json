@@ -1,22 +1,27 @@
 {
-  "exclude": ["dist", "dev", "example"],
+  "exclude": ["dist", "dev", "example", ".storybook"],
   "include": ["src"],
   "compilerOptions": {
     "noImplicitAny": true,
-    "module": "es6",
-    "target": "esnext",
+    "module": "esnext",
+    "target": "es5",
     "sourceMap": true,
     "strict": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
+    "strictBindCallApply": true,
     "declaration": true,
-    "declarationDir": "./src/types",
-    "emitDeclarationOnly": false,
+    "declarationDir": "src",
+    "emitDeclarationOnly": true,
+    "paths": {
+      "@src/*": ["./src/*"]
+    },
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   }
 }

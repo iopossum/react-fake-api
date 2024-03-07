@@ -1,1 +1,1 @@
-export { default as EditPathDrawer } from './Edit';
+export * from "./edit";

@@ -1,1 +1,1 @@
-export { default as MainDrawer } from './Main';
+export * from "./main";

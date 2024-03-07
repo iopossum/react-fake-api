@@ -13,4 +13,17 @@
   & :global(.ant-form-item) {
     margin-bottom: 10px;
   }
+  .response {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    flex: 1;
+    & > div {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+  label[for="custom"] {
+    width: 100%;
+  }
 }

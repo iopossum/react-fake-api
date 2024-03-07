@@ -17,6 +17,9 @@
       & :global(.ant-collapse-content-box) {
         padding: 0 4px 0 12px;
       }
+      & :global(.ant-collapse-header-text) {
+        word-break: break-all;
+      }
     }
     & :global(.ant-list-item) {
       padding: 8px 0;

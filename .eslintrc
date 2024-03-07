@@ -1,0 +1,80 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "prettier"
+  ],
+  "extends": [
+    "react-app",
+    "eslint:recommended",    
+    "plugin:import/typescript",
+    "plugin:@typescript-eslint/eslint-recommended",    
+    "prettier"
+  ],  
+  "rules": {
+    "no-undef": 1,
+    "no-console": 1,
+    "no-unused-vars": "off",
+    "import/no-named-as-default": 0,
+    "import/no-anonymous-default-export": 1,
+    "import/no-named-as-default-member": 1,
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"],
+        "pathGroups": [
+          {
+            "pattern": "react*",
+            "group": "builtin",
+            "position": "before"
+          },          
+          {
+            "pattern": "@storybook/react",
+            "group": "builtin",
+            "position": "before"
+          },          
+          {
+            "pattern": "@src/**",
+            "group": "internal"            
+          },
+          {
+            "pattern": "./*.scss",
+            "group": "index"            
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }        
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": true }],
+    "@typescript-eslint/no-explicit-any": 1,
+    "no-debugger": 1,
+    "no-const-assign": 1,
+    "no-eval": 1,
+    "no-empty": [2, {"allowEmptyCatch": true}],
+    "no-var": 1,
+    "require-await": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.stories.*"],
+      "rules": {
+        "import/no-anonymous-default-export": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ],
+  "globals": {
+    "JSX": "readonly"
+  }
+}

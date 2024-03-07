@@ -1,9 +1,15 @@
-import React, { ErrorInfo } from 'react';
-import { ErrorBoundaryProps, ErrorBoundaryState } from './ErrorBoundary.types';
+import { Component, ErrorInfo, PropsWithChildren } from "react";
 
+export interface IErrorBoundaryState {
+  error: Error | null;
+  errorInfo: ErrorInfo | null;
+}
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
+export class ErrorBoundary extends Component<
+  PropsWithChildren,
+  IErrorBoundaryState
+> {
+  constructor(props: PropsWithChildren) {
     super(props);
     this.state = { error: null, errorInfo: null };
   }
@@ -12,8 +18,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     // Catch errors in any components below and re-render with error message
     this.setState({
       error: error,
-      errorInfo: errorInfo
-    })
+      errorInfo: errorInfo,
+    });
     // You can also log error messages to an error reporting service here
   }
 
@@ -23,7 +29,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       return (
         <div>
           <h2>Что-то пошло не так...</h2>
-          <details style={{ whiteSpace: 'pre-wrap', }}>
+          <details style={{ whiteSpace: "pre-wrap" }}>
             {this.state.error && this.state.error.toString()}
             <br />
             {this.state.errorInfo.componentStack}
@@ -35,5 +41,3 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;
