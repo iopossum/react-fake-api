@@ -23,10 +23,11 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-fake-api": "^1.1.0"
+    "react-fake-api": "^1.1.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode=development"
+    "start": "webpack-dev-server --mode=development",
+    "build": "webpack --mode=production"
   },
   "browserslist": "> 0.25%, not dead",
   "license": "ISC"

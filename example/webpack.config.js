@@ -1,10 +1,10 @@
-const webpack = require("webpack");
+const path = require("path");
+
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const { merge } = require("webpack-merge");
-const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { merge } = require("webpack-merge");
 
 // style files regexes
 const styleRegex = /\.(less|css|scss|sass)$/;
@@ -93,9 +93,6 @@ module.exports = (env, { mode }) => {
     },
     resolve: {
       extensions: [".tsx", ".ts", ".js", ".jsx", ".json", ".css", ".less"],
-      alias: {
-        "react-dom": "@hot-loader/react-dom",
-      },
     },
     plugins: [
       new HtmlWebpackPlugin({

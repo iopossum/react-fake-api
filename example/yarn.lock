@@ -3360,7 +3360,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.6.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-    react-fake-api: "npm:^1.1.0"
+    react-fake-api: "npm:^1.1.2"
     style-loader: "npm:^3.3.4"
     terser-webpack-plugin: "npm:^5.3.10"
     ts-loader: "npm:^9.5.1"
@@ -5829,9 +5829,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-fake-api@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "react-fake-api@npm:1.1.0"
+"react-fake-api@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "react-fake-api@npm:1.1.2"
   dependencies:
     "@ant-design/icons": "npm:^5.3.1"
     antd: "npm:^5.15.1"
@@ -5847,7 +5847,7 @@ __metadata:
     lodash-es: ^4.17.21
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: 10c0/efc4db14f0ee37bbf038cf32251fd00527aec9344f268170fffd8a4252ad2d478a48e16277d14ffdd746f94e8d098055b9d85bd827f8bce46e6122eb7c58fb2b
+  checksum: 10c0/7a85fd2a9f6af65ab28da5b72ed2f02d084a345113d54f9bad7be9c35c0d6173567fdaf4da1271163f4ca43f4a4732068a04e783a3e4135af0ce63cc1e00b081
   languageName: node
   linkType: hard
 

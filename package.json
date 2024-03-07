@@ -1,6 +1,6 @@
 {
   "name": "react-fake-api",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "API manager for react apps",
   "author": "opossum4eg@gmail.com",
   "keywords": [
@@ -21,7 +21,6 @@
     "prebuild": "yarn run lint",
     "build": "rollup -c",
     "pub": "cd dist && npm publish",
-    "postpub": "cd dist && del package.json",
     "postinstall": "husky",
     "prepare": "husky"
   },
