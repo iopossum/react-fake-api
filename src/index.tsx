@@ -1,11 +1,11 @@
 import { useRef, PropsWithChildren, memo, FC } from "react";
 
-import { Button, IButtonProps } from "@src/components/button2";
+import { Button, IButtonProps } from "@src/components/button";
 import {
   MainDrawer,
   IMainDrawerProps,
   IMainDrawerHandle,
-} from "@src/components/drawer2/main2";
+} from "@src/components/drawer/main";
 import { ErrorBoundary } from "@src/components/error-boundary";
 
 export interface IRFAProps extends IMainDrawerProps, PropsWithChildren {

@@ -33,7 +33,7 @@ import {
 } from "antd";
 import { groupBy } from "lodash-es";
 
-import { CleanConfirm } from "@src/components/confirm2";
+import { CleanConfirm } from "@src/components/confirm";
 import {
   IRoute,
   IStorageCfg,
@@ -44,7 +44,7 @@ import {
 import { getLSItem, setLSItem, deleteLSItem } from "@src/utils/ls";
 import { makeServer, IFakeServerProps } from "@src/utils/server";
 
-import { EditDrawer, IEditDrawerHandle } from "../edit2";
+import { EditDrawer, IEditDrawerHandle } from "../edit";
 
 import {
   getPathKey,
