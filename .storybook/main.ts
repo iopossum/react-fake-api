@@ -10,7 +10,7 @@ const cfg: StorybookConfig = {
       shouldExtractLiteralValuesFromEnum: true,
       savePropValueAsString: true,
       shouldRemoveUndefinedFromOptional: true,
-      propFilter: (prop) => {
+      propFilter: () => {
         return true;
       },
     },
@@ -39,10 +39,6 @@ const cfg: StorybookConfig = {
     config.resolve = config.resolve || {};
     config.resolve.alias = config.resolve.alias || {};
     config.resolve.alias["@src"] = path.resolve(__dirname, "../src/");
-    // config.resolve.alias['react'] = path.resolve(__dirname, '../node_modules/react');
-    // config.resolve.alias['react-dom'] = path.resolve(__dirname, '../node_modules/react-dom');
-    // config.resolve.alias['miragejs/server'] = path.resolve(__dirname, '../node_modules/miragejs');
-    // config.resolve.alias['antd'] = path.resolve(__dirname, '../node_modules/antd');
 
     config.resolve.modules = [
       path.resolve(__dirname, "../node_modules"),
