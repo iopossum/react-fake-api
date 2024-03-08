@@ -1,4 +1,4 @@
-import { IRFAProps, IRoute } from "react-fake-api";
+import { RFA, IRoute } from "react-fake-api";
 
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import {
@@ -43,35 +43,37 @@ const NotificationContent = ({
 
 const App = () => {
   const [form] = Form.useForm();
-  const _onSend = ({ name }: { name: number }) => {
+  const handleSend = ({ name }: { name: number }) => {
     const { routes } = form.getFieldsValue();
-    const _route = routes[name];
-    if (_route.path) {
-      const _method = _route.method || "get";
-      const _notificationHeader = `${_method.toUpperCase()}: ${_route.path}`;
+    const route = routes[name];
+    if (route.path) {
+      const method = route.method || "get";
+      const notificationHeader = `${method.toUpperCase()}: ${route.path}`;
       notification.open({
         key: name.toString(),
-        message: _notificationHeader,
+        message: notificationHeader,
         description: <NotificationContent />,
         duration: 0,
       });
-      fetch(_route.path, {
-        method: _method.toUpperCase(),
+      fetch(route.path, {
+        method: method.toUpperCase(),
       })
         .then((res) => Promise.resolve(res))
         .catch((res) => Promise.resolve(res))
         .then((res) => {
-          const _isPassed = isPassed(res);
+          const isPassedRequest = isPassed(res);
           notification.open({
             key: name.toString(),
-            message: `${_notificationHeader} - ${_isPassed ? "PASSED" : "CATCHED"}`,
+            message: `${notificationHeader} - ${isPassedRequest ? "PASSED" : "CATCHED"}`,
             description: (
               <NotificationContent
                 spinning={false}
                 type={res.ok ? "success" : "error"}
                 message={`STATUS: ${res.status}`}
                 description={
-                  !_isPassed ? JSON.stringify(res._bodyText || "", null, 2) : ""
+                  !isPassedRequest
+                    ? JSON.stringify(res._bodyText || "", null, 2)
+                    : ""
                 }
               />
             ),
@@ -116,7 +118,7 @@ const App = () => {
                   <Form.Item {...restField} name={[name, "body"]}>
                     <Input placeholder="body" />
                   </Form.Item>
-                  <Button onClick={() => _onSend({ name, ...restField })}>
+                  <Button onClick={() => handleSend({ name, ...restField })}>
                     Send
                   </Button>
                   <MinusCircleOutlined onClick={() => remove(name)} />
@@ -140,25 +142,33 @@ const App = () => {
   );
 };
 
-if (process.env.NODE_ENV === "development") {
-  const cfg: IRFAProps = {
-    routes,
-    storageName: "mirage",
-  };
-  const RFA = require("react-fake-api");
-  type ModuleType = typeof RFA;
-  const load = (): Promise<ModuleType> => {
-    return import("react-fake-api");
-  };
-  (async () => {
-    const Module = await load();
-    const RFA = Module.default;
-    createRoot(document.getElementById("root")!).render(
-      <RFA {...cfg}>
-        <App />
-      </RFA>,
-    );
-  })();
-} else {
-  createRoot(document.getElementById("root")!).render(<App />);
-}
+/* USE THE CODE BELOW IN PRODUCTION */
+// if (process.env.NODE_ENV === "development") {
+//   const cfg: IRFAProps = {
+//     routes,
+//     storageName: "mirage",
+//   };
+//   const RFA = require("react-fake-api");
+//   type ModuleType = typeof RFA;
+//   const load = (): Promise<ModuleType> => {
+//     return import("react-fake-api");
+//   };
+//   (async () => {
+//     const Module = await load();
+//     const RFA = Module.default;
+//     createRoot(document.getElementById("root")!).render(
+//       <RFA {...cfg}>
+//         <App />
+//       </RFA>,
+//     );
+//   })();
+// } else {
+//   createRoot(document.getElementById("root")!).render(<App />);
+// }
+
+/* THE CODE BELOW IS JUST FOR GITHUB_PAGES EXAMPLES. DON'T USE THE CODE BELOW IN PRODUCTION */
+createRoot(document.getElementById("root")!).render(
+  <RFA routes={routes} storageName="mirage">
+    <App />
+  </RFA>,
+);
