@@ -33,7 +33,5 @@ jobs:
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
-        run: |
-          cd example
         with:
-          folder: dist
+          folder: example/dist
