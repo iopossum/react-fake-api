@@ -10,7 +10,7 @@ const { merge } = require("webpack-merge");
 const styleRegex = /\.(less|css|scss|sass)$/;
 const moduleRegex = /\.module\.(less|css|scss|sass)$/;
 
-module.exports = (env, { mode }) => {
+module.exports = (_, { mode }) => {
   const envCfg = {
     production: {
       devtool: "source-map",
@@ -34,9 +34,9 @@ module.exports = (env, { mode }) => {
   const main = {
     entry: "./src/index.tsx",
     output: {
-      path: path.join(__dirname, "../docs"),
+      path: path.join(__dirname, "dist"),
       publicPath: "/",
-      filename: "assets/bundle.[hash].js",
+      filename: "assets/bundle.[contenthash].js",
     },
     mode,
     module: {
@@ -108,7 +108,7 @@ module.exports = (env, { mode }) => {
       new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output
         // both options are optional
-        filename: "assets/[name].[hash].css",
+        filename: "assets/[name].[contenthash].css",
         // chunkFilename: "[id].css"
       }),
     ],
