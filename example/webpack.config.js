@@ -35,7 +35,7 @@ module.exports = (_, { mode }) => {
     entry: "./src/index.tsx",
     output: {
       path: path.join(__dirname, "dist"),
-      publicPath: "/",
+      publicPath: "/react-fake-api",
       filename: "assets/bundle.[contenthash].js",
     },
     mode,
