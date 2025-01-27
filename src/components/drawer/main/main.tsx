@@ -7,6 +7,7 @@ import {
   useImperativeHandle,
   forwardRef,
   useCallback,
+  MouseEvent,
   memo,
 } from "react";
 
@@ -17,12 +18,14 @@ import {
   SettingTwoTone,
   WarningTwoTone,
   InfoCircleTwoTone,
+  DownSquareOutlined,
 } from "@ant-design/icons";
 import {
   Dropdown,
   MenuProps,
   Drawer,
   List,
+  ListProps,
   Checkbox,
   Tag,
   Collapse,
@@ -34,6 +37,7 @@ import {
 import { groupBy } from "lodash-es";
 
 import { CleanConfirm } from "@src/components/confirm";
+
 import {
   IRoute,
   IStorageCfg,
@@ -41,11 +45,15 @@ import {
   IMirageExtendedRequest,
   TMethod,
 } from "@src/types";
+
 import { getLSItem, setLSItem, deleteLSItem } from "@src/utils/ls";
 import { makeServer, IFakeServerProps } from "@src/utils/server";
 
-import { EditDrawer, IEditDrawerHandle } from "../edit";
+import { GroupEditDrawer, IGroupEditDrawerHandle } from "../group-edit";
+import { RouteEditDrawer, IRouteEditDrawerHandle } from "../route-edit";
 
+import { DEFAULT_CONFIG, GROUP_SETTING_MENU } from "./consts";
+import { TMenuItem, IRouteExtended } from "./types";
 import {
   getPathKey,
   getMethodColor,
@@ -54,17 +62,6 @@ import {
 } from "./utils";
 
 import styles from "./main.module.scss";
-
-const DEFAULT_CONFIG: IStorageCfg = {
-  autoHandle: false,
-  routes: [],
-} as const;
-
-type TMenuItem = Required<MenuProps>["items"][number];
-
-interface IRouteExtended extends IRoute {
-  index: number;
-}
 
 export interface IMainDrawerProps {
   serverProps?: Omit<IFakeServerProps, "passthrough" | "routes">;
@@ -90,7 +87,8 @@ export const MainDrawer = memo(
       },
       ref,
     ) => {
-      const editRouteDrawerRef = useRef<IEditDrawerHandle>(null);
+      const routeEditDrawerRef = useRef<IRouteEditDrawerHandle>(null);
+      const groupEditDrawerRef = useRef<IGroupEditDrawerHandle>(null);
       const serverRef = useRef<ReturnType<typeof makeServer>>();
 
       const [items, setItems] = useState<IRouteExtended[]>(() =>
@@ -109,18 +107,25 @@ export const MainDrawer = memo(
             label: autoHandle ? "Disable auto handle" : "Enable auto handle",
             key: "autoHandle",
           },
+          { label: "Select all", key: "selectAll" },
+          { label: "Unselect all", key: "unselectAll" },
           { label: "Export", key: "export" },
         ];
       }, [autoHandle]);
 
-      const routesByGroup = useMemo(() => {
-        const grouped = groupBy(
-          items.map((v, i) => ({ ...v, index: i })),
-          "group",
-        );
+      const memoGroups = useMemo(() => {
+        const grouped = groupBy(items, "group");
+        const labels = Object.keys(grouped);
         return {
-          captions: Object.keys(grouped),
-          groups: grouped,
+          labels,
+          filteredLabels: labels.filter(
+            (v) => ["handled", "undefined"].indexOf(v) === -1,
+          ),
+          groups: Object.entries(grouped).map(([label, routes]) => ({
+            label,
+            checked: routes.filter((v) => v.checked).length,
+            total: routes.length,
+          })),
         };
       }, [items]);
 
@@ -129,7 +134,7 @@ export const MainDrawer = memo(
           const request = urls as IMirageExtendedRequest;
           const item: IRoute = {
             path: request.url
-              .replace(/\?.{1,}/g, "")
+              .replace(/\?.+/g, "")
               .replace(defaultHost || window.location.host, ""),
             method: request.method.toLowerCase() as TMethod,
           };
@@ -224,33 +229,33 @@ export const MainDrawer = memo(
           type: "manual",
           method: "get",
         };
-        if (editRouteDrawerRef.current) {
-          try {
-            const data =
-              (await editRouteDrawerRef.current.open(item)) || ({} as IRoute);
-            data.type = item.type;
+        try {
+          const data =
+            (await routeEditDrawerRef.current!.open(item)) || ({} as IRoute);
+          data.type = item.type;
 
-            data.color = getMethodColor(data.method);
-            setItems([...items, { ...data, index: items.length }]);
-          } catch (e) {}
-        }
+          data.color = getMethodColor(data.method);
+          setItems([...items, { ...data, index: items.length }]);
+        } catch (e) {}
       };
 
       const handleEdit = async (item: IRouteExtended) => {
-        if (editRouteDrawerRef.current) {
-          try {
-            const data = await editRouteDrawerRef.current.open(
-              items[item.index],
-            );
-            Object.assign(items[item.index], data);
-            setItems([...items]);
-          } catch (e) {}
-        }
+        try {
+          const data = await routeEditDrawerRef.current!.open(
+            items[item.index],
+          );
+          Object.assign(items[item.index], data);
+          setItems([...items]);
+        } catch (e) {}
       };
 
       const handleDelete = (item: IRouteExtended) => {
         items.splice(item.index, 1);
         setItems([...items]);
+      };
+
+      const handleGroupEditClick = (e: MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
       };
 
       const handleSettingsMenuItemClick: MenuProps["onClick"] = (e) => {
@@ -264,10 +269,148 @@ export const MainDrawer = memo(
           case "autoHandle":
             setTimeout(handleAutoHandleChange, 500);
             break;
+          case "selectAll":
+            setItems((prev) => prev.map((v) => ({ ...v, checked: true })));
+            break;
+          case "unselectAll":
+            setItems((prev) => prev.map((v) => ({ ...v, checked: false })));
+            break;
           case "export":
             handleExport();
             break;
         }
+      };
+
+      const handleGroupSettingsMenuItemClick = async (
+        group: string,
+        e: Parameters<NonNullable<MenuProps["onClick"]>>[number],
+      ) => {
+        switch (e.key) {
+          case "edit":
+            try {
+              const data = await groupEditDrawerRef.current!.open(
+                group === "undefined" ? "" : group,
+              );
+              setItems((prev) =>
+                prev.map((v) => ({
+                  ...v,
+                  group:
+                    (v.group || "undefined") === group ? data.group : v.group,
+                })),
+              );
+            } catch (e) {}
+            break;
+          case "selectAll":
+            setItems((prev) =>
+              prev.map((v) => ({
+                ...v,
+                checked: (v.group || "undefined") === group ? true : v.checked,
+              })),
+            );
+            break;
+          case "unselectAll":
+            setItems((prev) =>
+              prev.map((v) => ({
+                ...v,
+                checked: (v.group || "undefined") === group ? false : v.checked,
+              })),
+            );
+            break;
+        }
+      };
+
+      const renderItem: ListProps<IRouteExtended>["renderItem"] = (item) => {
+        const actions = [];
+        const handleClick: MenuProps["onClick"] = (e) => {
+          switch (e.key) {
+            case "edit":
+              handleEdit(item);
+              break;
+            case "delete":
+              handleDelete(item);
+              break;
+          }
+        };
+        const menuItems: TMenuItem[] = [{ label: "Edit", key: "edit" }];
+        if (ROUTE_TYPES.indexOf(item.type!) > -1) {
+          menuItems.push({ label: "Delete", key: "delete" });
+        }
+        if (item.delay) {
+          actions.push(
+            <CleanConfirm onConfirm={handleCleanDelay.bind(null, item)}>
+              <Tooltip title={"Response delay"}>
+                <span className={styles.delay}>{item.delay}ms</span>
+              </Tooltip>
+            </CleanConfirm>,
+          );
+        }
+        if (item.error) {
+          actions.push(
+            <CleanConfirm onConfirm={handleCleanError.bind(null, item)}>
+              <Tooltip title={"Response error"}>
+                <WarningTwoTone twoToneColor="red" />
+              </Tooltip>
+            </CleanConfirm>,
+          );
+        }
+        if (!!item.status && item.status !== 200) {
+          actions.push(
+            <Tooltip title={"Response status"}>
+              {item.status >= 400 ? (
+                <Tag color="error">{item.status}</Tag>
+              ) : (
+                <span className={styles.delay}>{item.status}</span>
+              )}
+            </Tooltip>,
+          );
+        }
+        if (item.custom) {
+          actions.push(
+            <CleanConfirm
+              onConfirm={handleCleanCustom.bind(null, item)}
+              disabled={item.type === "handled"}
+            >
+              <Tooltip title={"Custom response"} placement="topRight">
+                <InfoCircleTwoTone />
+              </Tooltip>
+            </CleanConfirm>,
+          );
+        }
+        actions.push(
+          <Dropdown
+            menu={{
+              items: menuItems,
+              onClick: handleClick,
+            }}
+            trigger={["click"]}
+          >
+            <SettingTwoTone />
+          </Dropdown>,
+        );
+        let badgeIcon = null;
+        switch (item.type) {
+          case "handled":
+            badgeIcon = <BulbTwoTone className={styles.badge} />;
+            break;
+          case "manual":
+            badgeIcon = <EditTwoTone className={styles.badge} />;
+            break;
+        }
+        return (
+          <List.Item actions={actions}>
+            <Checkbox
+              checked={item.checked}
+              onChange={handleChangeActive.bind(null, item)}
+            >
+              <Badge count={badgeIcon} color={"blue"}>
+                <Tag color={item.color || getMethodColor(item.method)}>
+                  {item.method.toUpperCase()}
+                </Tag>
+              </Badge>{" "}
+              {item.path}
+            </Checkbox>
+          </List.Item>
+        );
       };
 
       useEffect(() => {
@@ -344,139 +487,62 @@ export const MainDrawer = memo(
           onClose={handleHideDrawer}
           open={visible}
           extra={
-            <Space>
-              <Dropdown
-                menu={{
-                  items: settingsMenuItems,
-                  onClick: handleSettingsMenuItemClick,
-                }}
-                trigger={["click"]}
-              >
-                <DownSquareTwoTone />
-              </Dropdown>
-            </Space>
+            <Dropdown
+              menu={{
+                items: settingsMenuItems,
+                onClick: handleSettingsMenuItemClick,
+              }}
+              trigger={["click"]}
+            >
+              <DownSquareTwoTone />
+            </Dropdown>
           }
         >
           <Collapse
             defaultActiveKey={
-              routesByGroup.captions.length ? [routesByGroup.captions[0]] : []
+              memoGroups.labels.length ? [memoGroups.labels[0]] : []
             }
-            items={routesByGroup.captions.map((group) => ({
-              key: group,
-              label: `${group === "undefined" ? "No group" : group} (${routesByGroup.groups[group].filter((v) => v.checked).length}/${routesByGroup.groups[group].length})`,
-              children: (
-                <List
-                  itemLayout="horizontal"
-                  dataSource={routesByGroup.groups[group]}
-                  renderItem={(item) => {
-                    const actions = [];
-                    const handleClick: MenuProps["onClick"] = (e) => {
-                      switch (e.key) {
-                        case "edit":
-                          handleEdit(item);
-                          break;
-                        case "delete":
-                          handleDelete(item);
-                          break;
-                      }
-                    };
-                    const menuItems: TMenuItem[] = [
-                      { label: "Edit", key: "edit" },
-                    ];
-                    if (ROUTE_TYPES.indexOf(item.type!) > -1) {
-                      menuItems.push({ label: "Delete", key: "delete" });
-                    }
-                    if (item.delay) {
-                      actions.push(
-                        <CleanConfirm onConfirm={() => handleCleanDelay(item)}>
-                          <Tooltip title={"Response delay"}>
-                            <span className={styles.delay}>{item.delay}ms</span>
-                          </Tooltip>
-                        </CleanConfirm>,
-                      );
-                    }
-                    if (item.error) {
-                      actions.push(
-                        <CleanConfirm onConfirm={() => handleCleanError(item)}>
-                          <Tooltip title={"Response error"}>
-                            <WarningTwoTone twoToneColor="red" />
-                          </Tooltip>
-                        </CleanConfirm>,
-                      );
-                    }
-                    if (!!item.status && item.status !== 200) {
-                      actions.push(
-                        <Tooltip title={"Response status"}>
-                          {item.status >= 400 ? (
-                            <Tag color="error">{item.status}</Tag>
-                          ) : (
-                            <span className={styles.delay}>{item.status}</span>
-                          )}
-                        </Tooltip>,
-                      );
-                    }
-                    if (item.custom) {
-                      actions.push(
-                        <CleanConfirm
-                          onConfirm={() => handleCleanCustom(item)}
-                          disabled={item.type === "handled"}
-                        >
-                          <Tooltip
-                            title={"Custom response"}
-                            placement="topRight"
-                          >
-                            <InfoCircleTwoTone />
-                          </Tooltip>
-                        </CleanConfirm>,
-                      );
-                    }
-                    actions.push(
-                      <Dropdown
-                        menu={{
-                          items: menuItems,
-                          onClick: handleClick,
-                        }}
-                        trigger={["click"]}
-                      >
-                        <SettingTwoTone />
-                      </Dropdown>,
-                    );
-                    let badgeIcon = null;
-                    switch (item.type) {
-                      case "handled":
-                        badgeIcon = <BulbTwoTone className={styles.badge} />;
-                        break;
-                      case "manual":
-                        badgeIcon = <EditTwoTone className={styles.badge} />;
-                        break;
-                    }
-                    return (
-                      <List.Item actions={actions}>
-                        <Checkbox
-                          checked={item.checked}
-                          onChange={() => handleChangeActive(item)}
-                        >
-                          <Badge count={badgeIcon} color={"blue"}>
-                            <Tag
-                              color={item.color || getMethodColor(item.method)}
-                            >
-                              {item.method.toUpperCase()}
-                            </Tag>
-                          </Badge>{" "}
-                          {item.path}
-                        </Checkbox>
-                      </List.Item>
-                    );
-                  }}
-                />
-              ),
-            }))}
+            items={memoGroups.groups.map((group) => {
+              return {
+                key: group.label,
+                label: `${group.label === "undefined" ? "No group" : group.label} (${group.checked}/${group.total})`,
+                children: (
+                  <List
+                    itemLayout="horizontal"
+                    dataSource={items.filter((v) =>
+                      group.label === "undefined"
+                        ? !v.group
+                        : v.group === group.label,
+                    )}
+                    renderItem={renderItem}
+                  />
+                ),
+                extra: (
+                  <Space onClick={handleGroupEditClick}>
+                    <Dropdown
+                      menu={{
+                        items: GROUP_SETTING_MENU,
+                        onClick: handleGroupSettingsMenuItemClick.bind(
+                          null,
+                          group.label,
+                        ),
+                      }}
+                      trigger={["click"]}
+                    >
+                      <DownSquareOutlined />
+                    </Dropdown>
+                  </Space>
+                ),
+              };
+            })}
           />
-          <EditDrawer
-            ref={editRouteDrawerRef}
-            groups={routesByGroup.captions.filter(
-              (v) => ["handled", "undefined"].indexOf(v) === -1,
-            )}
+          <RouteEditDrawer
+            ref={routeEditDrawerRef}
+            groups={memoGroups.filteredLabels}
+          />
+          <GroupEditDrawer
+            ref={groupEditDrawerRef}
+            groups={memoGroups.filteredLabels}
           />
         </Drawer>
       );

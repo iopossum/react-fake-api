@@ -1,6 +1,6 @@
 import { Registry, Request } from "miragejs";
-import { AnyFactories, AnyModels, AnyResponse } from "miragejs/-types";
-import Schema from "miragejs/orm/schema";
+import type { AnyFactories, AnyModels, AnyResponse } from "miragejs/-types";
+import type Schema from "miragejs/orm/schema";
 
 export interface IMirageExtendedRequest extends Request {
   readyState: number;

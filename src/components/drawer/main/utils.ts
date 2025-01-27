@@ -28,7 +28,7 @@ export const waitResponse = (request: IMirageExtendedRequest) => {
       if (request.readyState === 4) {
         resolve(request.responseText);
         clearInterval(interval);
-        return false;
+        return;
       }
       if (i < 90) {
         i++;

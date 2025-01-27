@@ -32,4 +32,4 @@ export const RFA: FC<IRFAProps> = memo(({ children, buttonProps, ...rest }) => {
 
 export default RFA;
 
-export { IRoute } from "@src/types";
+export type { IRoute } from "@src/types";

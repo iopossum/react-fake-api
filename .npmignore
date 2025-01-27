@@ -3,6 +3,7 @@ src
 .husky
 .storybook
 .yarn
+.github
 .yarnrc.yml
 
 npm-debug.log
@@ -11,12 +12,14 @@ npm-debug.log
 .env
 .eslintrc
 .eslintignore
+eslint.config.js
 .babelrc
 .browserslistrc
 .stylelintrc
 .gitignore
 .editorconfig
 .postcssrc.js
+.size-snapshot.json
 package-lock.json
 stats.html
 rollup.config.js

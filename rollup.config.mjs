@@ -101,6 +101,9 @@ const config = [
       copy({
         targets: [
           { src: "dist/esm/src/types/index.d.ts", dest: "dist/types/" },
+          { src: "README.md", dest: "dist/" },
+          { src: "LICENSE", dest: "dist/" },
+          { src: "package.json", dest: "dist/" },
         ],
       }),
     ],

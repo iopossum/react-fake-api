@@ -1,5 +1,7 @@
 import { Component, ErrorInfo, PropsWithChildren } from "react";
 
+import styles from "./error-boundary.module.scss";
+
 export interface IErrorBoundaryState {
   error: Error | null;
   errorInfo: ErrorInfo | null;
@@ -29,8 +31,8 @@ export class ErrorBoundary extends Component<
       return (
         <div>
           <h2>Что-то пошло не так...</h2>
-          <details style={{ whiteSpace: "pre-wrap" }}>
-            {this.state.error && this.state.error.toString()}
+          <details className={styles.details}>
+            {this.state.error?.toString()}
             <br />
             {this.state.errorInfo.componentStack}
           </details>

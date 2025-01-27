@@ -3,6 +3,7 @@
 .yarn/install-state.gz
 .yarn/cache
 .yarn/unplugged
+.eslintcache
 dist
 .DS_Store
 node_modules/

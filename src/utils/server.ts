@@ -1,5 +1,5 @@
 import { createServer, Request, Response } from "miragejs";
-import { AnyFactories, AnyModels, AnyResponse } from "miragejs/-types";
+import type { AnyFactories, AnyModels, AnyResponse } from "miragejs/-types";
 
 import { IRoute } from "@src/types";
 
@@ -87,7 +87,7 @@ export const makeServer = <
                 (!v.error && !v.custom && v.response?.(...args)) ||
                 v.custom ||
                 defaultOpts.response;
-              return new Response(status, headers, response as Object);
+              return new Response(status, headers, response);
             },
             opts,
           );

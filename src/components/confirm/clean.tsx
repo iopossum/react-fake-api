@@ -1,21 +1,21 @@
-import { memo } from "react";
-
 import { Popconfirm, PopconfirmProps } from "antd";
 
-export const CleanConfirm = memo(
-  ({
-    children,
-    placement = "topRight",
-    ...props
-  }: Omit<PopconfirmProps, "title"> & { title?: string }) => (
-    <Popconfirm
-      placement={placement}
-      {...props}
-      title={"Are you sure?"}
-      okText="OK"
-      cancelText="Cancel"
-    >
-      {children}
-    </Popconfirm>
-  ),
+export interface ICleanConfirmProps extends Omit<PopconfirmProps, "title"> {
+  title?: string;
+}
+
+export const CleanConfirm = ({
+  children,
+  placement = "topRight",
+  ...props
+}: ICleanConfirmProps) => (
+  <Popconfirm
+    placement={placement}
+    {...props}
+    title={"Are you sure?"}
+    okText="OK"
+    cancelText="Cancel"
+  >
+    {children}
+  </Popconfirm>
 );

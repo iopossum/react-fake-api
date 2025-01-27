@@ -1,1 +1,2 @@
-yarn run lint-push
+yarn run lint:css
+yarn run lint:push
